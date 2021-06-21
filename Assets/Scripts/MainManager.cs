@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
-public class MainManager : MonoBehaviour
+using TMPro;
+using System.IO;
+public  class MainManager : MonoBehaviour
 {
     public Brick BrickPrefab;
     public int LineCount = 6;
@@ -18,13 +19,40 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
-    
+
+    public static MainManager instance;
+
+    string currentPlayerName;
+
+     public Text playerBestScore;
+
+   public string currentHighPlayer;
+
+    public  int currentHighScore;
+
+
+
+    private void Awake()
+    {
+        instance = this;
+
+        
+    }
     // Start is called before the first frame update
     void Start()
     {
+        
+       
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
-        
+
+        currentHighPlayer = GameManager.Instance.currentHighPlayer;
+        currentHighScore = GameManager.Instance.currentHighScore;
+        //currentHighScore = 0;
+        //currentHighPlayer = " ";
+        playerBestScore.text = "Name : " + currentHighPlayer + "        Score : " + currentHighScore ;
+
+
         int[] pointCountArray = new [] {1,1,2,2,5,5};
         for (int i = 0; i < LineCount; ++i)
         {
@@ -66,11 +94,48 @@ public class MainManager : MonoBehaviour
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
+
+        GameManager.currentscore =  m_Points;
     }
 
     public void GameOver()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        GameManager.Instance.replaceData();
     }
+
+    //public void saveData()
+    //{
+    //    //PlayerData data = new PlayerData();
+    //    //data.scoreJson = currentHighScore;
+    //    //data.nameJson  = currentHighPlayer;
+
+
+
+    //    //string json = JsonUtility.ToJson(data);
+    //    //File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+      
+
+
+    //}
+
+    ////public void loadData()
+    ////{
+    ////    string path = Application.persistentDataPath + "/savefile.json";
+    ////    if (File.Exists(path))
+    ////    {
+    ////        string json = File.ReadAllText(path);
+    ////        PlayerData data = JsonUtility.FromJson<PlayerData>(json);
+
+    ////        //GameManager.Instance.currentHighScore = data.scoreJson;
+
+    ////        //GameManager.Instance.currentHighPlayer = data.nameJson;
+
+    ////        currentHighScore = data.scoreJson;
+    ////        currentHighPlayer = data.nameJson;
+    ////    }
+
+    ////    Debug.Log("Data Loaded Successfully ");
+    ////}
 }
